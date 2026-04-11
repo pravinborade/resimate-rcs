@@ -1,17 +1,33 @@
+import React,{ type ComponentType, type ReactNode }  from "react";
+import { createBrowserRouter, Navigate, type RouteObject } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import { createBrowserRouter, Navigate } from "react-router-dom";
-import { routes } from "./routeConfig";
 import AuthLayout from "../layouts/AuthLayout";
+import { routes } from "./routeConfig";
 
-const isAuth = () => !localStorage.getItem("token");
+// 🔐 Auth check
+const isAuth = (): boolean => !!localStorage.getItem("token");
 
-const getLayout = (layout, children) => {
-  if (layout === "dashboard") return <MainLayout>{children}</MainLayout>;
+// 🧩 Route Config Type
+interface AppRoute {
+  path: string;
+  element?: ComponentType;
+  layout?: "dashboard" | "auth";
+  isPrivate?: boolean;
+  children?: AppRoute[];
+}
+
+// 🎨 Layout wrapper
+const getLayout = (layout: string | undefined, children: ReactNode) => {
+  if (layout === "dashboard") {
+    return <MainLayout/>
+  }
   return <AuthLayout>{children}</AuthLayout>;
 };
 
-const buildRoutes = (routes) =>
+// 🔁 Build routes recursively
+const buildRoutes = (routes: AppRoute[]): RouteObject[] =>
   routes.map((route) => {
+    // 🧱 Parent route (with children)
     if (route.children) {
       return {
         path: route.path,
@@ -24,7 +40,7 @@ const buildRoutes = (routes) =>
       };
     }
 
-    const Component = route.element;
+    const Component = route.element as ComponentType;
 
     return {
       path: route.path,
@@ -42,8 +58,9 @@ const buildRoutes = (routes) =>
     };
   });
 
+// 🚀 Router
 const router = createBrowserRouter([
-  ...buildRoutes(routes),
+  ...buildRoutes(routes as AppRoute[]),
   { path: "*", element: <div>Not Found</div> },
 ]);
 

@@ -1,5 +1,6 @@
-import Login from "../pages/login";
-import Dashboard from "../pages/dashboard";
+import Dashboard from "@/modules/dashboard";
+import Login from "@/modules/login/pages";
+
 export const routes = [
   {
     path: "/login",
@@ -9,7 +10,7 @@ export const routes = [
   },
   {
     path: "/",
-    element: "layout", // handled separately
+    element: "layout",
     isPrivate: true,
     layout: "dashboard",
     children: [
