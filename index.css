@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@config "./tailwind.config.ts";
+
+/* Minimal base styling */
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
